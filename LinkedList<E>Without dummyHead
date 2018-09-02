@@ -1,0 +1,196 @@
+package com.isea.java;
+
+public class LinkedList<E> {
+    private class Node{
+        private E e;
+        private Node next;
+
+        public Node(){
+            this(null,null);
+        }
+
+        public Node(E e){
+            this(e,null);
+        }
+
+        public Node(E e,Node next){
+            this.e = e;
+            this.next = next;
+        }
+        @Override
+        public String toString(){
+            return e.toString();
+        }
+    }
+
+    private Node head;
+    private  int size;
+
+    public LinkedList(){
+        head = null;
+        size = 0;
+    }
+
+    public int getSize(){
+        return size;
+    }
+
+    public boolean isEmpty(){
+        return size == 0;
+    }
+
+    //    在链表的头部添加一个元素
+    public void addFirst(E e){
+        head = new Node(e,head);
+        size ++;
+    }
+
+    //    在链表的任意的位置添加元素，这个操作基本上是练习的时候使用的
+    public void add(int index,E e){
+        if (index < 0 || index > size){
+            throw new IllegalArgumentException("Add fail, illegal param...");
+        }
+        Node prev = head;
+//        假如插入的位置是索引为0，即在链表的头部插入元素，头部的元素是不存在前一个元素的
+        if (index == 0){
+            addFirst(e);
+        }else {
+            for (int i = 0 ; i < index - 1 ; i ++){
+                    prev = prev.next;
+            }
+            /*Node node = new Node(e);
+            node.next = prev.next;
+            prev.next = node;*/
+            prev.next = new Node(e,prev.next);
+        }
+        size ++;
+    }
+
+    //    为链表获取index位置的元素，仅是练习使用的，一般链表很少进行查询操作
+    public E get(int index){
+        if (index < 0 || index > size){
+            throw new IllegalArgumentException("Get fail,illegal param...");
+        }
+        Node cur = head;
+        for (int i = 0; i < index ; i ++){
+            cur = cur.next;
+        }
+        /* 关于链表遍历的总结：
+         * 1，假如是带虚拟头结点的：如果我们要找index位置的前一个节点prev，插入的时候，从虚拟头结点的位置开始遍历，直到index位置，index位置是开区间，如果我们要找index位置的元素，需要从head位置开始遍历。*/
+        return cur.e;
+    }
+
+    public E remove(int index) {
+        if (index < 0 || index > size) {
+            throw new IllegalArgumentException("Get fail,illegal param...");
+        }
+
+        Node prev = head;
+        Node delNode;
+        if (index == 0){
+            delNode = head;
+            head = head.next;
+            delNode.next = null;
+        }else {
+            for (int i = 0 ; i < index - 1 ; i ++){
+                prev = prev.next;
+            }
+            delNode = prev.next;
+            prev.next = delNode.next;
+            delNode.next = null;
+        }
+        size --;
+        return delNode.e;
+    }
+
+    //从链表中删除第一个元素
+    public E removeFirst(){
+       return remove(0);
+    }
+
+    public E removeLast(){
+        return remove(size - 1);
+    }
+
+
+    public E getLast(){
+        return get(size -1);
+    }
+
+    public E getFirst(){
+        return get(0);
+    }
+
+    public void set(int index,E e){
+        if (index < 0 || index > size){
+            throw new IllegalArgumentException("Get fail,illegal param...");
+        }
+
+        Node cur = head;
+        for (int i = 0; i < size ; i ++){
+            cur = cur.next;
+        }
+        cur.e = e;
+    }
+
+    //    查找链表中是不是含有元素e
+    public boolean contains(E e){
+        Node cur = head;
+        for (int i = 0 ; i < size ; i ++){
+            if (cur.e.equals(e))
+                return true;
+            cur = cur.next;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder res = new StringBuilder();
+        res.append("LinkedList:");
+        Node cur = head;
+        while(cur != null){
+            res.append(cur + "-->");
+            cur = cur.next;
+        }
+        res.append("NULL");
+        return res.toString();
+    }
+}
+
+
+测试代码：
+
+package com.isea.java;
+public class TestLinkedList {
+    public static void main(String[] args) {
+        LinkedList linkedList = new LinkedList();
+        for (int i = 0 ; i < 5 ; i ++){
+            linkedList.addFirst(i);
+            System.out.println(linkedList);
+        }
+        linkedList.add(3,999);
+        System.out.println(linkedList);
+
+        linkedList.remove(3);
+        System.out.println(linkedList);
+
+        linkedList.removeFirst();
+        System.out.println(linkedList);
+
+        linkedList.removeLast();
+        System.out.println(linkedList);
+    }
+
+}
+
+
+输出的内容依次是：
+LinkedList:2-->1-->0-->NULL
+LinkedList:3-->2-->1-->0-->NULL
+LinkedList:4-->3-->2-->1-->0-->NULL
+LinkedList:4-->3-->2-->999-->1-->0-->NULL
+LinkedList:4-->3-->2-->1-->0-->NULL
+LinkedList:3-->2-->1-->0-->NULL
+LinkedList:3-->2-->1-->NULL
+
